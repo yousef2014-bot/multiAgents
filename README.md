@@ -3,6 +3,8 @@
 ## Complete Workflow Scenario: Building a Full-Stack Todo App
 
 ```mermaid
+%% Agent Workflow Diagram
+
 graph TD
     %% User Input
     A[User: "I want to build a todo app"] --> B[ResearchAgent]
@@ -112,7 +114,7 @@ graph TD
     D -.-> FA
     F -.-> FU
     H -.-> FD
-    
+
     %% Styling
     classDef userNode fill:#e1f5fe
     classDef researchNode fill:#f3e5f5
@@ -122,7 +124,7 @@ graph TD
     classDef devopsNode fill:#e0f2f1
     classDef qaNode fill:#f1f8e9
     classDef fileNode fill:#f5f5f5
-    
+
     class A userNode
     class B,B1,B2,B3,B4,B5 researchNode
     class C,C1,C2,C3,C4 planningNode
@@ -131,6 +133,7 @@ graph TD
     class H,H1,H2,H3,H4,H5 devopsNode
     class E,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10,E11,G,G1,G2,G3,G4,G5,G6,G7,I,I1,I2,I3,I4,I5,I6,I7 qaNode
     class FB,FP,FQ,FA,FU,FD fileNode
+
 ```
 
 ## Agent Communication Flow
