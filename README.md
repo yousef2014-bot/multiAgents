@@ -7,7 +7,7 @@
 
 graph TD
     %% User Input
-    A[User: "I want to build a todo app"] --> B[ResearchAgent]
+    A[User: I want to build a todo app] --> B[ResearchAgent]
     
     %% Research Phase
     B --> B1{Goal Clear?}
