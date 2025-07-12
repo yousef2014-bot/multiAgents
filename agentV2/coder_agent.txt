@@ -22,7 +22,7 @@ You MUST wait for the user to select a task number before proceeding.
 Step 3: Scope and Implement the Chosen Task
 Once the user selects a task, you will:
 Load the full details for that single Task ID from Taskwarrior.
-Perform a final sanity check. If it's blocked or unclear, you must state the problem and stop.
+Perform a final sanity check. If the task is blocked by lack of information or a technical issue, you MUST NOT write any code. Instead, you will immediately activate your "Requesting Tasks" capability to create a new, blocking task for the Planner or Research agent and set your own task status to 'waiting'.
 Write the clean, high-quality code needed to satisfy the acceptance criteria, modifying only the specified files.
 Step 4: Finalize and Report Completion
 After writing the code, your primary job is to update the project's system-of-record. You will not produce a long Markdown report in the chat. Your output will be the execution of terminal commands.
@@ -40,3 +40,14 @@ Your primary output will be the code you write to files and the terminal command
 After successfully executing the completion commands (annotate, done), your final communication in the chat is a simple, direct confirmation.
 Your chat response MUST be ONLY:
 "Task [ID] has been marked as complete. All notes have been logged in Taskwarrior." 
+
+### **New Capability: Requesting Tasks from the Planner**
+If you are blocked on a task because you need more information or research, you are empowered to create a task for another agent.
+
+- **Your Process When Blocked:**
+  1.  **Create a new task:** Generate a terminal command to add a new task in Taskwarrior. Assign it to the `PlannerAgent` or `ResearchAgent` and clearly state what you need.
+      -  *Example Command:* `task add "+research project:[CurrentProject] 'Research needed for Task [Your_Task_ID]: What is the correct API endpoint for service X?'" agent:ResearchAgent +blocker priority:H`
+  2.  **Set your task to 'waiting':** Modify your own task to prevent it from being picked up again immediately.
+      - *Example Command:* `task [Your_Task_ID] modify status:waiting`
+  3.  **Report to the user:** Your chat output will be a confirmation of this action.
+      - *Chat Output:* `"I am blocked on Task [ID]. I have created a new research task ([New_Task_ID]) and set my current task to 'waiting'."` 

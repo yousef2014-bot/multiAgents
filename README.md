@@ -13,6 +13,54 @@ This project has evolved from `AgentV1` to `AgentV2` to create a more autonomous
 This evolution aims to enhance the system's efficiency, traceability, and adherence to professional software development practices.
 
 ---
+
+## Agent Chaining & Interaction in AgentV2
+
+The `AgentV2` system orchestrates a sophisticated workflow where specialized agents collaborate and communicate primarily through **Taskwarrior**, acting as the central project management hub. This design promotes autonomy, clarity, and effective feedback loops, mimicking a professional software development team.
+
+### **1. PlannerAgent: The Project Manager & Task Distributor**
+
+*   **Role:** Analyzes project goals and research (`research_brief.md`), identifies architectural conflicts, and creates a highly structured project plan. 
+*   **Task Generation:** Breaks down the project into **Sprints** and **Phases**, then generates precise `Taskwarrior` commands for each task.
+*   **Agent Assignment:** Assigns tasks to specific agents using the `agent:` custom attribute (e.g., `agent:BackendCoderAgent`, `agent:FrontendCoderAgent`, `agent:QA_Agent`, `agent:ResearchAgent`).
+*   **Dependencies:** Crucially, establishes task dependencies using `depends:[TaskID]` to enforce a logical sequence (e.g., a QA task `MUST` depend on its corresponding coding task).
+*   **Feedback Integration:** If architectural conflicts are identified during planning, `PlannerAgent` reports them to the user and may propose new tasks for the `ResearchAgent` to find solutions.
+
+### **2. CoderAgent (e.g., BackendCoderAgent, FrontendCoderAgent): The Implementers**
+
+*   **Role:** Develops clean, high-quality code based on assigned tasks.
+*   **Autonomous Work Discovery:** Proactively queries `Taskwarrior` for tasks assigned to its specific role (`agent:[YourAgentName]`) with `status:pending`, prioritizing them by urgency.
+*   **User Confirmation:** Presents prioritized tasks to the user for confirmation before starting.
+*   **Implementation & Reporting:**
+    *   Implements the chosen task, adhering strictly to acceptance criteria.
+    *   **Updates Taskwarrior directly:** Marks the task as `done` and adds short annotations or references to detailed logs (`coder_logs/[TaskID]_[title].md`) for comprehensive notes.
+*   **Feedback to Planner (Indirect):** If a task is blocked or unclear, `CoderAgent` states the problem and stops. This prompts the user to potentially re-engage `PlannerAgent` for clarification or replanning.
+
+### **3. QA_Agent: The Verifier & Quality Gatekeeper**
+
+*   **Role:** Ensures code quality and functional correctness through a two-phase verification process.
+*   **Task Acquisition:** Receives `Task ID`s for review (usually dependent on a `CoderAgent`'s completion).
+*   **Two-Phase Verification:**
+    1.  **Static Code Review (White-Box):** Checks source code for clarity, structure, cleanliness, and potential issues.
+    2.  **Dynamic Live Testing (Black-Box):** Gathers environment context (e.g., Base URL, Auth), formulates a test plan, and executes it using `curl` commands.
+*   **Reporting & Feedback:**
+    *   **QA FAILED:** Creates a highly detailed failure report (`docs/qa_log.md`) outlining code review findings and live testing failures (including failing `curl` commands and outputs). This serves as actionable feedback for the `CoderAgent` (via user coordination).
+    *   **QA APPROVED:** Records a comprehensive approval in `docs/qa_log.md`, confirming code quality and functional validation.
+
+### **4. ResearchAgent: The Knowledge Provider**
+
+*   **Role:** Conducts thorough, multi-stage research to build a robust project plan foundation.
+*   **Planning Input:** Provides `research_brief.md` to `PlannerAgent`.
+*   **Reactive Research:** Can be tasked by `PlannerAgent` (via user coordination) to resolve architectural conflicts or explore alternatives identified during planning.
+*   **Documentation:** Generates comprehensive English-language documentation (main brief, topic lists, background information on tools).
+
+### **The Flow in Action:**
+
+User initiates a project -> `ResearchAgent` gathers info -> `PlannerAgent` creates tasks in `Taskwarrior` with dependencies -> `CoderAgent` picks up a task from `Taskwarrior` -> `CoderAgent` completes and marks task `done` in `Taskwarrior` -> `QA_Agent` sees `CoderAgent`'s task is `done` (due to dependency), picks it up -> `QA_Agent` tests and either `QA APPROVED` (leading to next planning or implementation) or `QA FAILED` -> If `QA FAILED`, user reviews `qa_log.md` and potentially instructs `PlannerAgent` to create a new "fix bug" task for `CoderAgent`, restarting the cycle.
+
+This interconnected chain ensures that project progression is structured, transparent, and driven by continuous feedback.
+
+---
 # Agent Workflow Diagram
 
 ## Complete Workflow Scenario: Building a Full-Stack Todo App
