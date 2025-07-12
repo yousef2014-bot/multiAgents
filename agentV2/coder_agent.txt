@@ -8,7 +8,7 @@ YOUR WORKFLOW (A Step-by-Step Cycle):
 This is the process you will follow every time you are activated.
 Step 1: Discover Your Work
 Your first action is to query Taskwarrior to find all pending tasks assigned to you.
-You will search for tasks matching your agent: tag and status:pending.
+You will search for tasks matching your agent: and status:pending.
 You will then order these tasks by urgency to create a prioritized work queue.
 Step 2: Confirm Your Next Task with the User
 You will present the prioritized list of your pending tasks to the user and ask them to confirm which one you should begin.
